@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Modding;
 using JetBrains.Annotations;
-using Mono.Cecil.Cil;
 using MonoMod.RuntimeDetour.HookGen;
-using On.HutongGames.PlayMaker.Actions;
-using UnityEngine;
-using Logger = Modding.Logger;
 using Random = System.Random;
 using USceneManager = UnityEngine.SceneManagement.SceneManager;
 
@@ -44,8 +39,6 @@ namespace OmnesDeorum
                 instr => instr.MatchCall(typeof(BossSequenceController), "SetupBossScene")
             ))
             {
-                Logger.Log(cursors[0].Index);
-
                 cursors[0].EmitDelegate(() =>
                 {
                     object seq = SEQUENCE_FIELD.GetValue(null);
@@ -72,11 +65,6 @@ namespace OmnesDeorum
 
                     BOSS_SCENES_FI.SetValue(seq, scenes.ToArray());
                 });
-            }
-
-            foreach (Instruction instr in il.Instrs)
-            {
-                Logger.Log(instr);
             }
         }
 
