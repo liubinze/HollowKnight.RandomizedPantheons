@@ -25,7 +25,7 @@ namespace OmnesDeorum
             "GG_Engine_Root",
         };
 
-        private static bool _first = true;
+        private static BossScene _last = null;
 
         private const string RAD = "GG_Radiance";
 
@@ -45,23 +45,24 @@ namespace OmnesDeorum
 
                     BossScene[] bossScenes = (BossScene[]) BOSS_SCENES_FI.GetValue(seq);
 
-                    BossScene lastScene = bossScenes.Last();
-                    BossScene firstScene = null;
-                    
-                    if (_first)
-                    {
-                        firstScene = bossScenes[0];
-                    }
+                    BossScene lastScene = bossScenes.Last().sceneName == RAD ? bossScenes.Last() : null;
 
-                    List<BossScene> scenes = bossScenes.Where(x => x.sceneName != RAD && !LORE_GARBAGE.Contains(x.sceneName)).Skip(1).OrderBy(i => RNG.Next()).ToList();
+                    List<BossScene> scenes = null;
 
-                    scenes.Add(lastScene);
-                    
-                    if (_first)
+                    do
                     {
-                        scenes.Insert(0, firstScene);
-                        _first = false;
-                    }
+                        scenes = bossScenes
+                            .Where(x => x.sceneName != RAD && !LORE_GARBAGE.Contains(x.sceneName) && x.sceneName != (_last?.sceneName ?? ""))
+                            .Take(scenes?.Count ?? bossScenes.Length - 1)
+                            .Skip(1)
+                            .OrderBy(i => RNG.Next())
+                            .ToList();
+                    } while (scenes[0].sceneName == "GG_Spa" || scenes.Last().sceneName == "GG_Spa");
+
+                    if(lastScene != null)
+                        scenes.Add(lastScene);
+
+                    _last = scenes[0];
 
                     BOSS_SCENES_FI.SetValue(seq, scenes.ToArray());
                 });
