@@ -26,7 +26,8 @@ namespace OmnesDeorum
             "GG_Wyrm",
             "GG_Engine",
             "GG_Engine_Prime",
-            "GG_Engine_Root"
+            "GG_Engine_Root",
+            "GG_Spa"
         };
 
         private static BossScene First
@@ -76,27 +77,13 @@ namespace OmnesDeorum
 
                     BossScene[] bossScenes = (BossScene[]) BOSS_SCENES_FI.GetValue(seq);
 
-                    BossScene lastScene = bossScenes.Last().sceneName == RAD ? bossScenes.Last() : null;
-
                     // Swapping pantheons
                     _name = seq.name;
 
-                    List<BossScene> scenes;
-
-                    do
-                    {
-                        scenes = bossScenes
-                            .Where(x => !LORE_GARBAGE.Contains(x.sceneName) && x.sceneName != (First?.sceneName ?? ""))
-                            .Take(bossScenes.Length - (lastScene ? 1 : 0))
-                            .OrderBy(i => RNG.Next())
-                            .ToList();
-                    } 
-                    while (scenes[0].sceneName == "GG_Spa" || scenes.Last().sceneName == "GG_Spa");
-
-                    if (lastScene != null)
-                    {
-                        scenes.Add(lastScene);
-                    }
+                    List<BossScene> scenes = bossScenes
+                        .Where(x => !LORE_GARBAGE.Contains(x.sceneName) && x.sceneName != First?.sceneName)
+                        .OrderBy(i => RNG.Next())
+                        .ToList();
 
                     // First run of a pantheon
                     if (First == null)
