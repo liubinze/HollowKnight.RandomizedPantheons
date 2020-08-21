@@ -7,23 +7,23 @@
     <Copyright>Copyright ©  2018</Copyright>
     <OutputPath>bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="@echo on" />
+    <Exec Command="echo Copying mod" />
+    <Exec Command="copy &quot;$(TargetPath)&quot; &quot;D:\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\&quot;" />
+  </Target>
   <ItemGroup>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\11\Email\bin\Debug\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\References\PlayMaker.dll</HintPath>
+    <Reference Include="PlayMaker">
+      <HintPath>..\..\..\11\Email\bin\Debug\PlayMaker.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\References\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\11\Email\bin\Debug\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\11\Email\bin\Debug\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="@echo on"/>
-    <Exec Command="echo Copying mod"/>
-    <Exec Command='copy "$(TargetPath)" "D:\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\"'/>
-  </Target>
 </Project>

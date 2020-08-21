@@ -8,6 +8,7 @@ using MonoMod.RuntimeDetour.HookGen;
 using On.HutongGames.PlayMaker;
 using Random = System.Random;
 using USceneManager = UnityEngine.SceneManagement.SceneManager;
+using MonoMod.Cil;
 
 // ReSharper disable Unity.NoNullPropogation
 
@@ -63,15 +64,15 @@ namespace OmnesDeorum
 
         public override void Initialize() => IL.BossSequenceController.SetupNewSequence += RandomizeSequence;
 
-        private static void RandomizeSequence(HookIL il)
+        private static void RandomizeSequence(ILContext il)
         {
-            HookILCursor c = il.At(0);
+            ILCursor c = new ILCursor(il).Goto(0);
 
-            while (c.TryFindNext(out HookILCursor[] cursors,
+            if (c.TryFindNext(out ILCursor[] cursors,
                 instr => instr.MatchCall(typeof(BossSequenceController), "SetupBossScene")
             ))
             {
-                cursors[0].EmitDelegate(() =>
+                cursors[0].EmitDelegate<Action>(() =>
                 {
                     var seq = (BossSequence) SEQUENCE_FIELD.GetValue(null);
 
