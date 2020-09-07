@@ -30,6 +30,13 @@ namespace RandomPantheons
             "GG_Gruz_Mother_V"
         };
 
+        // Some scenes cause issues when last
+        private static readonly List<string> InvalidLast = new List<string>()
+        {
+            // Causes an infinite loop
+            "GG_Spa",
+        };
+
         private readonly Random _rand = new Random();
 
         public override string GetVersion() => VersionUtil.GetVersion<RandomPantheons>();
@@ -68,6 +75,14 @@ namespace RandomPantheons
                 scenes.RemoveAt(0);
 
                 scenes.Insert(_rand.Next(1, scenes.Count), first);
+            }
+            while (InvalidLast.Contains(scenes[scenes.Count-1].sceneName))
+            {
+                BossScene last = scenes[scenes.Count-1];
+
+                scenes.RemoveAt(scenes.Count - 1);
+
+                scenes.Insert(_rand.Next(1, scenes.Count-1), last);
             }
 
             // Multiple benches in a row causes an infinite loop.
