@@ -9,19 +9,19 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\dll\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\dll\PlayMaker.dll</HintPath>
+      <HintPath>..\..\..\References\PlayMaker.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\dll\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\References\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\dll\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\dll\Vasi.dll</HintPath>
+      <HintPath>..\..\..\References\Mods\Vasi.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

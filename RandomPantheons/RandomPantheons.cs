@@ -76,13 +76,14 @@ namespace RandomPantheons
 
                 scenes.Insert(_rand.Next(1, scenes.Count), first);
             }
-            while (InvalidLast.Contains(scenes[scenes.Count-1].sceneName))
+            
+            while (InvalidLast.Contains(scenes[scenes.Count - 1].sceneName))
             {
                 BossScene last = scenes[scenes.Count-1];
-
+                
                 scenes.RemoveAt(scenes.Count - 1);
 
-                scenes.Insert(_rand.Next(1, scenes.Count-1), last);
+                scenes.Insert(_rand.Next(1, scenes.Count - 1), last);
             }
 
             // Multiple benches in a row causes an infinite loop.
