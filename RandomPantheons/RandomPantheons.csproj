@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <ProjectGuid>{31F84711-1AF0-4567-A8A8-F05645CF9E3F}</ProjectGuid>
-        <TargetFramework>net35</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
         <AssemblyTitle>RandomPantheons</AssemblyTitle>
         <Product>Random Pantheons</Product>
         <Copyright>Copyright © 2018</Copyright>
         <OutputPath>bin\$(Configuration)\</OutputPath>
+        <Version>1.0.0.0</Version>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
+        </Reference>
+        <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+          <HintPath>..\..\..\References\MMHOOK_Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\..\..\References\PlayMaker.dll</HintPath>
@@ -20,13 +24,27 @@
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
-        <Reference Include="Vasi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <Reference Include="Vasi, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
             <HintPath>..\..\..\References\Mods\Vasi.dll</HintPath>
         </Reference>
     </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="@echo on"/>
-        <Exec Command="echo Copying mod"/>
-        <Exec Command="copy &quot;$(TargetPath)&quot; &quot;D:\Steam\steamapps\common\Hollow Knight\hollow_knight_Data\Managed\Mods\&quot;"/>
+
+    <Target Name="CopyMod" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="D:/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/$(TargetName)" SkipUnchangedFiles="true" />
+    </Target>
+
+    <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
+        <MakeDir Directories="$(ProjectDir)Output" />
+        <Delete Files="$(ProjectDir)/$(TargetName).zip" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ProjectDir)/Output/" />
+        <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ProjectDir)/Output/" />
+        <Copy Condition="Exists('$(SolutionDir)/README.md')" SourceFiles="$(SolutionDir)/README.md" DestinationFolder="$(ProjectDir)/Output/" ContinueOnError="true" />
+        <ZipDirectory DestinationFile="$(ProjectDir)/$(TargetName).zip" SourceDirectory="$(ProjectDir)/Output" />
+        <RemoveDir Directories="$(ProjectDir)Output" />
+
+        <GetFileHash Files="$(ProjectDir)/$(TargetName).zip" Algorithm="SHA256">
+            <Output TaskParameter="Items" ItemName="FilesWithHashes" />
+        </GetFileHash>
+        <Message Importance="High" Text="@(FilesWithHashes->'%(Identity): %(FileHash)')" />
     </Target>
 </Project>
