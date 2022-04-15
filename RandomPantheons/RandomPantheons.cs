@@ -49,6 +49,16 @@ namespace RandomPantheons
              * Which is otherwise ignored if we edit the sequence later.
              */
             On.BossSequenceDoor.Start += RandomizeSequence;
+            On.PlayMakerFSM.Start += ModifyRadiance;
+        }
+
+        private void ModifyRadiance(On.PlayMakerFSM.orig_Start orig, PlayMakerFSM self)
+        {
+            orig(self);
+            if (self.name == "Absolute Radiance"&&self.FsmName== "Control")
+            {
+                self.GetAction<SetStaticVariable>("Ending Scene", 1).setValue.boolValue = false;//Modify this action to leave p5 as other doors
+            }
         }
 
         private void RandomizeSequence
