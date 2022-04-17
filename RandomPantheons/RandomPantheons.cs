@@ -11,7 +11,7 @@ namespace RandomPantheons
     [UsedImplicitly]
     public class RandomPantheons : Mod, ITogglableMod
     {
-        private static readonly List<string> Blacklist = new List<string>
+        private static readonly List<string> Blacklist = new()
         {
             "GG_Unn",
             "GG_Wyrm",
@@ -21,7 +21,7 @@ namespace RandomPantheons
         };
 
         // Some scenes cause issues when first.
-        private static readonly List<string> InvalidFirst = new List<string>()
+        private static readonly List<string> InvalidFirst = new()
         {
             // Causes an infinite loop
             "GG_Spa",
@@ -31,7 +31,7 @@ namespace RandomPantheons
         };
 
         // Some scenes cause issues when last
-        private static readonly List<string> InvalidLast = new List<string>()
+        private static readonly List<string> InvalidLast = new()
         {
             // Causes an infinite loop
             "GG_Spa",
@@ -49,15 +49,18 @@ namespace RandomPantheons
              * Which is otherwise ignored if we edit the sequence later.
              */
             On.BossSequenceDoor.Start += RandomizeSequence;
+            // Fixes the door for P5
             On.PlayMakerFSM.Start += ModifyRadiance;
         }
 
-        private void ModifyRadiance(On.PlayMakerFSM.orig_Start orig, PlayMakerFSM self)
+        private static void ModifyRadiance(On.PlayMakerFSM.orig_Start orig, PlayMakerFSM self)
         {
             orig(self);
-            if (self.name == "Absolute Radiance"&&self.FsmName== "Control")
+            
+            if (self is { name: "Absolute Radiance", FsmName: "Control" }) 
             {
-                self.GetAction<SetStaticVariable>("Ending Scene", 1).setValue.boolValue = false;//Modify this action to leave p5 as other doors
+                // Modify this action to leave p5 like the other doors
+                self.GetAction<SetStaticVariable>("Ending Scene", 1).setValue.boolValue = false;
             }
         }
 
@@ -73,7 +76,7 @@ namespace RandomPantheons
 
             List<BossScene> scenes = bossScenes
                                      .Where(x => !Blacklist.Contains(x.sceneName))
-                                     .OrderBy(i => _rand.Next())
+                                     .OrderBy(_ => _rand.Next())
                                      .ToList();
             
             const string bench = "GG_Spa";
