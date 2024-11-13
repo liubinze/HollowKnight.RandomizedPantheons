@@ -47,6 +47,7 @@ namespace RandomPantheons
         // Some scenes let HUD to re-appear
         private static readonly List<string> AppearedHUD = new()
         {
+            "GG_Spa",
             "GG_Grimm",
             "GG_Grimm_Nightmare",
             "GG_Hollow_Knight",
@@ -109,7 +110,7 @@ namespace RandomPantheons
                          InvalidLast.Contains(scenes[scenes.Count - 1].sceneName);
                 for (int i = 0; i < scenes.Count - 1; i++)
                     if (scenes[i].sceneName == bench && scenes[i + 1].sceneName == bench)
-                        f = 1;
+                        f = true;
             }
             while (f);
             // Add bench after Pure Vessel and Absolute Radiance
