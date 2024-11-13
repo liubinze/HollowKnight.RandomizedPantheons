@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Modding;
 using JetBrains.Annotations;
@@ -17,7 +17,7 @@ namespace RandomPantheons
             "GG_Wyrm",
             "GG_Engine",
             "GG_Engine_Prime",
-            "GG_Engine_Root",
+            "GG_Engine_Root"
         };
 
         // Some scenes cause issues when first.
@@ -34,7 +34,23 @@ namespace RandomPantheons
         private static readonly List<string> InvalidLast = new()
         {
             // Causes an infinite loop
-            "GG_Spa",
+            "GG_Spa"
+        };
+
+        // Some scenes cause HUD to disappear
+        private static readonly List<string> VanishedHUD = new()
+        {
+            "GG_Hollow_Knight",
+            "GG_Radiance"
+        };
+
+        // Some scenes let HUD to re-appear
+        private static readonly List<string> AppearedHUD = new()
+        {
+            "GG_Grimm",
+            "GG_Grimm_Nightmare",
+            "GG_Hollow_Knight",
+            "GG_Radiance"
         };
 
         private readonly Random _rand = new Random();
@@ -74,48 +90,32 @@ namespace RandomPantheons
 
             ref BossScene[] bossScenes = ref Mirror.GetFieldRef<BossSequence, BossScene[]>(seq, "bossScenes");
 
-            List<BossScene> scenes = bossScenes
-                                     .Where(x => !Blacklist.Contains(x.sceneName))
-                                     .OrderBy(_ => _rand.Next())
-                                     .ToList();
+            List<BossScene> scenes = bossScenes.Where(x => !Blacklist.Contains(x.sceneName)).ToList();
             
             const string bench = "GG_Spa";
 
-            while (InvalidFirst.Contains(scenes[0].sceneName))
+            do
             {
-                BossScene first = scenes[0];
-
-                scenes.RemoveAt(0);
-
-                scenes.Insert(_rand.Next(1, scenes.Count), first);
-            }
-            
-            while (InvalidLast.Contains(scenes[scenes.Count - 1].sceneName))
-            {
-                BossScene last = scenes[scenes.Count-1];
-                
-                scenes.RemoveAt(scenes.Count - 1);
-
-                scenes.Insert(_rand.Next(1, scenes.Count - 1), last);
-            }
-
-            // Multiple benches in a row causes an infinite loop.
-            for (int i = 0; i < scenes.Count - 1; i++)
-            {
-                if
-                (
-                    scenes[i].sceneName != bench
-                    || scenes[i].sceneName != scenes[i + 1].sceneName
-                )
+                // Fisher–Yates shuffle
+                for (int i = scenes.Count - 1; i; i--)
                 {
-                    continue;
+                    int x = _rand.Next(0, i + 1);
+                    BossScene tmp = scenes[i];
+                    scenes[i] = scenes[x];
+                    scenes[x] = tmp;
                 }
-
-                scenes.RemoveAt(i);
-
-                // Move the cursor one back, because otherwise we'll skip over an element.
-                i--;
+                // Check the conditions
+                bool f = InvalidFirst.Contains(scenes[0].sceneName) ||
+                         InvalidLast.Contains(scenes[scenes.Count - 1].sceneName);
+                for (int i = 0; i < scenes.Count - 1; i++)
+                    if (scenes[i].sceneName == bench && scenes[i + 1].sceneName == bench)
+                        f = 1;
             }
+            while (f);
+            // Add bench after Pure Vessel and Absolute Radiance
+            for (int i = 0; i < scenes.Count - 1; i++)
+                if (VanishedHUD.Contains(scenes[i].sceneName) && !AppearedHUD.Contains(scene[i + 1].sceneName))
+                    scenes.Insert(i + 1, scenes.Find(x => x.sceneName == bench));
 
             bossScenes = scenes.ToArray();
 
