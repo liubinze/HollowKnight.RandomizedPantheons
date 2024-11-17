@@ -95,10 +95,10 @@ namespace RandomPantheons
             
             const string bench = "GG_Spa";
 
-            do
+            while (true)
             {
                 // Fisher–Yates shuffle
-                for (int i = scenes.Count - 1; i; i--)
+                for (int i = scenes.Count - 1; i > 0; i--)
                 {
                     int x = _rand.Next(0, i + 1);
                     BossScene tmp = scenes[i];
@@ -109,13 +109,14 @@ namespace RandomPantheons
                 bool f = InvalidFirst.Contains(scenes[0].sceneName) ||
                          InvalidLast.Contains(scenes[scenes.Count - 1].sceneName);
                 for (int i = 0; i < scenes.Count - 1; i++)
-                    if (scenes[i].sceneName == bench && scenes[i + 1].sceneName == bench)
+                    if (scenes[i].sceneName == scenes[i + 1].sceneName)
                         f = true;
+                if (!f)
+                    break;
             }
-            while (f);
             // Add bench after Pure Vessel and Absolute Radiance
             for (int i = 0; i < scenes.Count - 1; i++)
-                if (VanishedHUD.Contains(scenes[i].sceneName) && !AppearedHUD.Contains(scene[i + 1].sceneName))
+                if (VanishedHUD.Contains(scenes[i].sceneName) && !AppearedHUD.Contains(scenes[i + 1].sceneName))
                     scenes.Insert(i + 1, scenes.Find(x => x.sceneName == bench));
 
             bossScenes = scenes.ToArray();
