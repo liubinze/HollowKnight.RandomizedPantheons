@@ -11,31 +11,27 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\References\Assembly-CSharp.dll</HintPath>
+            <HintPath>..\References\Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="MMHOOK_Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\References\MMHOOK_Assembly-CSharp.dll</HintPath>
+            <HintPath>..\References\MMHOOK_Assembly-CSharp.dll</HintPath>
         </Reference>
         <Reference Include="MMHOOK_PlayMaker, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-          <HintPath>..\..\..\References\MMHOOK_PlayMaker.dll</HintPath>
+            <HintPath>..\References\MMHOOK_PlayMaker.dll</HintPath>
         </Reference>
         <Reference Include="PlayMaker, Version=1.6.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\References\PlayMaker.dll</HintPath>
+            <HintPath>..\References\PlayMaker.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\References\UnityEngine.dll</HintPath>
+            <HintPath>..\References\UnityEngine.dll</HintPath>
         </Reference>
         <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\References\UnityEngine.CoreModule.dll</HintPath>
+            <HintPath>..\References\UnityEngine.CoreModule.dll</HintPath>
         </Reference>
         <Reference Include="Vasi, Version=2.0.0.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\..\..\References\Mods\Vasi.dll</HintPath>
+            <HintPath>..\References\Vasi.dll</HintPath>
         </Reference>
     </ItemGroup>
-
-    <Target Name="CopyMod" AfterTargets="PostBuildEvent">
-        <Copy SourceFiles="$(TargetPath);$(TargetDir)$(TargetName).pdb" DestinationFolder="D:/Steam/steamapps/common/Hollow Knight/hollow_knight_Data/Managed/Mods/$(TargetName)" SkipUnchangedFiles="true" />
-    </Target>
 
     <Target Name="CreateReleaseZip" AfterTargets="PostBuildEvent" Condition="'$(Configuration)' == 'Release'">
         <MakeDir Directories="$(ProjectDir)Output" />
