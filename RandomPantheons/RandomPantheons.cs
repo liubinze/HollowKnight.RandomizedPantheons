@@ -11,15 +11,6 @@ namespace RandomPantheons
     [UsedImplicitly]
     public class RandomPantheons : Mod, ITogglableMod
     {
-        private static readonly List<string> Blacklist = new()
-        {
-            "GG_Unn",
-            "GG_Wyrm",
-            "GG_Engine",
-            "GG_Engine_Prime",
-            "GG_Engine_Root"
-        };
-
         // Some scenes cause issues when first.
         private static readonly List<string> InvalidFirst = new()
         {
@@ -33,6 +24,12 @@ namespace RandomPantheons
         // Some scenes cause issues when last
         private static readonly List<string> InvalidLast = new()
         {
+            // Can't leave
+            "GG_Unn",
+            "GG_Wyrm",
+            "GG_Engine",
+            "GG_Engine_Prime",
+            "GG_Engine_Root",
             // Causes an infinite loop
             "GG_Spa"
         };
@@ -47,6 +44,11 @@ namespace RandomPantheons
         // Some scenes let HUD to re-appear
         private static readonly List<string> AppearedHUD = new()
         {
+            "GG_Unn",
+            "GG_Wyrm",
+            "GG_Engine",
+            "GG_Engine_Prime",
+            "GG_Engine_Root",
             "GG_Spa",
             "GG_Grimm",
             "GG_Grimm_Nightmare",
@@ -91,9 +93,7 @@ namespace RandomPantheons
 
             ref BossScene[] bossScenes = ref Mirror.GetFieldRef<BossSequence, BossScene[]>(seq, "bossScenes");
 
-            List<BossScene> scenes = bossScenes.Where(x => !Blacklist.Contains(x.sceneName)).ToList();
-            
-            const string bench = "GG_Spa";
+            List<BossScene> scenes = bossScenes.ToList();
 
             while (true)
             {
@@ -108,16 +108,13 @@ namespace RandomPantheons
                 // Check the conditions
                 bool f = InvalidFirst.Contains(scenes[0].sceneName) ||
                          InvalidLast.Contains(scenes[scenes.Count - 1].sceneName);
-                for (int i = 0; i < scenes.Count - 1; i++)
-                    if (scenes[i].sceneName == scenes[i + 1].sceneName)
+                for (int i = 1; i < scenes.Count; i++)
+                    if (scenes[i - 1].sceneName == scenes[i].sceneName ||
+                        VanishedHUD.Contains(scenes[i - 1].sceneName) && !AppearedHUD.Contains(scenes[i].sceneName))
                         f = true;
                 if (!f)
                     break;
             }
-            // Add bench after Pure Vessel and Absolute Radiance
-            for (int i = 0; i < scenes.Count - 1; i++)
-                if (VanishedHUD.Contains(scenes[i].sceneName) && !AppearedHUD.Contains(scenes[i + 1].sceneName))
-                    scenes.Insert(i + 1, scenes.Find(x => x.sceneName == bench));
 
             bossScenes = scenes.ToArray();
 
