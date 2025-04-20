@@ -41,21 +41,6 @@ namespace RandomPantheons
             "GG_Radiance"
         };
 
-        // Some scenes let HUD to re-appear
-        private static readonly List<string> AppearedHUD = new()
-        {
-            "GG_Unn",
-            "GG_Wyrm",
-            "GG_Engine",
-            "GG_Engine_Prime",
-            "GG_Engine_Root",
-            "GG_Spa",
-            "GG_Grimm",
-            "GG_Grimm_Nightmare",
-            "GG_Hollow_Knight",
-            "GG_Radiance"
-        };
-
         private readonly Random _rand = new Random();
 
         public override string GetVersion() => VersionUtil.GetVersion<RandomPantheons>();
@@ -70,6 +55,8 @@ namespace RandomPantheons
             On.BossSequenceDoor.Start += RandomizeSequence;
             // Fixes the door for P5
             On.PlayMakerFSM.Start += ModifyRadiance;
+            // Fixes HUD
+            On.BossSceneController.Start += HUDChecker;
         }
 
         private static void ModifyRadiance(On.PlayMakerFSM.orig_Start orig, PlayMakerFSM self)
@@ -80,6 +67,16 @@ namespace RandomPantheons
             {
                 // Modify this action to leave p5 like the other doors
                 self.GetAction<SetStaticVariable>("Ending Scene", 1).setValue.boolValue = false;
+            }
+        }
+
+        private static IEnumerator HUDChecker(On.BossSceneController.orig_Start orig, BossSceneController self)
+        {
+            yield return orig(self);
+            if (!VanishedHUD.Contains(GameManager.instance.sceneName))
+            {
+                yield return new WaitUntil(() => GameManager.instance.gameState == GameState.PLAYING);
+                GameCameras.instance.hudCanvas.LocateMyFSM("Slide Out").SendEvent("IN");
             }
         }
 
@@ -109,8 +106,7 @@ namespace RandomPantheons
                 bool f = InvalidFirst.Contains(scenes[0].sceneName) ||
                          InvalidLast.Contains(scenes[scenes.Count - 1].sceneName);
                 for (int i = 1; i < scenes.Count; i++)
-                    if (scenes[i - 1].sceneName == scenes[i].sceneName ||
-                        VanishedHUD.Contains(scenes[i - 1].sceneName) && !AppearedHUD.Contains(scenes[i].sceneName))
+                    if (scenes[i - 1].sceneName == scenes[i].sceneName)
                         f = true;
                 if (!f)
                     break;
@@ -124,6 +120,7 @@ namespace RandomPantheons
         public void Unload()
         {
             On.BossSequenceDoor.Start -= RandomizeSequence;
+            On.BossSceneController.Start -= HUDChecker;
         }
     }
 }
