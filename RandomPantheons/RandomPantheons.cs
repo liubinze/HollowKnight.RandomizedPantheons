@@ -1,8 +1,10 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Modding;
 using JetBrains.Annotations;
 using Random = System.Random;
+using UnityEngine;
 using USceneManager = UnityEngine.SceneManagement.SceneManager;
 using Vasi;
 
@@ -75,7 +77,7 @@ namespace RandomPantheons
             yield return orig(self);
             if (!VanishedHUD.Contains(GameManager.instance.sceneName))
             {
-                yield return new WaitUntil(() => GameManager.instance.gameState == GameState.PLAYING);
+                yield return new WaitUntil(() => GameManager.instance.gameState == GlobalEnums.GameState.PLAYING);
                 GameCameras.instance.hudCanvas.LocateMyFSM("Slide Out").SendEvent("IN");
             }
         }
